@@ -1,79 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import {ethers} from 'ethers';
 import axios from 'axios';
 import conf from './config.json'; 
+
+import Card from './cards/CardUI';
+import '../src/cards/card-style.css';
+
+import img1 from './images/aragorn.jpg';
+import img2 from './images/legolas.jpg';
+import img3 from './images/gimli.jpg';
+import img4 from './images/gandalf.jpg';
+import img5 from './images/frodo.jpg';
+import img6 from './images/baramir.jpg';
 
 
 const API_URL = conf.API_URL;
 const SellerPubKey = '003X9PaFsuG2XUxV6OPHYiTR6buqNPCbeZzOxtCiuWE=';
 
-const ITEMS = [{
-    id: '1',
-    price: ethers.utils.parseEther('1')
-},{
-    id: '2',
-    price: ethers.utils.parseEther('2')
-}
-];
+var PersonalInfo = {'name':'', 'address':'', 'mail':'', 'phone':''};
 
 function Store({ paymentProcessor, usdt, publicKey }) {
-    const [name, setName] = useState(undefined);
-    const [mail, setMail] = useState(undefined);
-    const [address, setAddress] = useState(undefined);
-    const [phone, setPhone] = useState(undefined);
-
-    const buy = async item => {
-        if(name === '' || name === undefined ||
-           mail === '' || mail === undefined ||
-           address === '' || address === undefined||
-           phone === '' || phone === undefined) {
-            alert('User info should be completed!');
-            return;
-        }
-        //generate the user info
-        const requestPaymentObject = {
-                    publicKey: publicKey,
-                    itemId: item.id,
-                    pubKey: item.publicKey,
-                    name: name,
-                    mail: mail,
-                    address: address,
-                    phone: phone
-                };
-        
-        //request server to create a payment object and return a GUID related the payment
-        const payment = await axios.post(`${API_URL}/api/getPaymentId`, requestPaymentObject);
-        
-        //let the Payment Processor contract to transfer amount of the price
-        let instance = await usdt.deployed();
-        const tx1 = await instance.approve(paymentProcessor.address, item.price);
-        await tx1.wait();
-
-        //encrypt the payment info with the seller's public key. Although the network is public 
-        //no one who listens to the Ethereum transactions or events cannot read the shopping data unless he/she has the private key
-        const encrypted = await axios.post(`${API_URL}/api/encryptWithPK/`, {
-            message: payment.data,
-            pubKey: SellerPubKey
-            });
-
-        //run Payment Processor's pay function
-        const tx2 = await paymentProcessor.pay(item.price, JSON.stringify(encrypted));
-        const receipt = await tx2.wait();
-    
-        await new Promise(resolve => setTimeout(resolve, 5000)); 
-        const paymentResult = await axios.get(`${API_URL}/api/getPaymentResult/${payment.data}`)
-        console.log(paymentResult);
-    };
 
     function handleChange(event) {
-        if(event.target.name === 'name'){setName(event.target.value)}
-        else if(event.target.name === 'email'){setMail(event.target.value)}
-        else if(event.target.name === 'address'){setAddress(event.target.value)}
-        else if(event.target.name === 'phone'){setPhone(event.target.value)}
+        if(event.target.name === 'name'){PersonalInfo.name = event.target.value}
+        else if(event.target.name === 'email'){PersonalInfo.mail = event.target.value}
+        else if(event.target.name === 'address'){PersonalInfo.address = event.target.value}
+        else if(event.target.name === 'phone'){PersonalInfo.phone = event.target.value}
       }
+    
+    async function getPersonalInfo(){
+        return PersonalInfo;
+    }
 
     return (
         <ul className='list-group'>
+            <fieldset>
+            <legend>Personal Info:</legend>
             <li className='list-group-item'>
                 <table>
                     <tbody>
@@ -104,37 +66,35 @@ function Store({ paymentProcessor, usdt, publicKey }) {
                     </tbody>
                 </table>
             </li>
+            </fieldset>
             
-            <li className='list-group-item'>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                Item1 - <span className='front-weight-bold'>3 USDT</span>
-                            </td>
-                            <td>
-                                <button type='button'
-                                className='btn btn-primary float-right'
-                                onClick={()=>buy(ITEMS[0])}>
-                                    Pay
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Item2 - <span className='front-weight-bold'>4 USDT</span>
-                            </td>
-                            <td>
-                                <button type='button'
-                                className='btn btn-primary float-right'
-                                onClick={()=>buy(ITEMS[1])}>
-                                    Pay
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </li>
+
+<fieldset>
+<legend>Items:</legend>
+<div className="list-group-item">
+                <div className="row">
+                    <div className="col-md-4">
+                        <Card imgsrc={img1} title={"Aragorn"} description={"8 USDT"} itemId={"0"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                    <div className="col-md-4">
+                        <Card imgsrc={img2} title={"Legolas"} description={"6 USDT"} itemId={"1"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                    <div className="col-md-4">
+                        <Card imgsrc={img3} title={"Gimli"} description={"6 USDT"} itemId={"2"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                    <div className="col-md-4">
+                        <Card imgsrc={img4} title={"Gandalf"} description={"7 USDT"} itemId={"3"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                    <div className="col-md-4">
+                        <Card imgsrc={img5} title={"Frodo"} description={"4 USDT"} itemId={"4"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                    <div className="col-md-4">
+                        <Card imgsrc={img6} title={"Baramir"} description={"4 USDT"} itemId={"5"} publicKey={publicKey} usdt={usdt} paymentProcessor={paymentProcessor} personalInfo={PersonalInfo} getName = {getPersonalInfo}/>
+                    </div>
+                </div>
+            </div>
+</fieldset>
+            
         </ul>
     )
 }
