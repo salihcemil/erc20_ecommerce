@@ -29,6 +29,14 @@ const ITEMS = [{
 {
     id: '5',
     price: ethers.utils.parseEther('4')
+},
+{
+    id: '6',
+    price: ethers.utils.parseEther('5')
+},
+{
+    id: '7',
+    price: ethers.utils.parseEther('20')
 }
 ];
 
