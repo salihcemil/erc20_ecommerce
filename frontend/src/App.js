@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Store from './Store.js';
 import getBlockchain from './ethereum.js';
+
+import {Navbar, Container, Nav, NavDropdown, Form, Button} from 'react-bootstrap';
 
 function App() {
   const [paymentProcessor, setPaymentProcessor] = useState(undefined); 
   const [usdt, setUsdt] = useState(undefined); 
   const [publicKey, setPublicKey] = useState(undefined);
+  const [account, setAccount] = useState('');
 
   useEffect(() => {
     const init = async () => {
@@ -14,6 +17,7 @@ function App() {
       setUsdt(usdt);
 
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      setAccount(accounts[0]);
       window.ethereum.request({method: 'eth_getEncryptionPublicKey', params: [accounts[0]]}).
         then((result) => {
           setPublicKey(result);
@@ -43,8 +47,27 @@ function App() {
   return (
     <div className='container'>
       <div className='col-sm-12'>
-        <h1></h1>
-        <Store paymentProcessor={paymentProcessor} usdt={usdt} publicKey={publicKey} />
+      <Navbar bg="light" expand="lg">
+        <Container fluid>
+          <Navbar.Brand href="#">LOTR S</Navbar.Brand>
+          <Navbar.Toggle aria-controls="navbarScroll" />
+          <Navbar.Collapse id="navbarScroll">
+            <Nav
+              className="me-auto my-2 my-lg-0"
+              style={{ maxHeight: '100px' }}
+              navbarScroll
+            >
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="/admin">Admin</Nav.Link>
+            </Nav>
+            <Nav.Link className="d-flex" href={'https://rinkeby.etherscan.io/address/'+account}>{account}</Nav.Link>
+            {/* <Form className="d-flex">
+              <Button variant="outline-success" >Connect</Button>
+            </Form> */}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <Store paymentProcessor={paymentProcessor} usdt={usdt} publicKey={publicKey} />
       </div>
     </div>
   );
