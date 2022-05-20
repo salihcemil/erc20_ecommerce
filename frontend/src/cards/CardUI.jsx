@@ -69,6 +69,8 @@ const Card = props => {
         const tx1 = await instance.approve(props.paymentProcessor.address, item.price);
         await tx1.wait();
 
+        console.log('payment data=> '+payment.data);
+
         //encrypt the payment info with the seller's public key. Although the network is public 
         //no one who listens to the Ethereum transactions or events cannot read the shopping data unless he/she has the private key
         const encrypted = await axios.post(`${API_URL}/api/encryptWithPK/`, {
@@ -77,13 +79,14 @@ const Card = props => {
             });
 
         //run Payment Processor's pay function
-        const tx2 = await props.paymentProcessor.pay(item.price, JSON.stringify(encrypted));
+        console.log('Encrypted Result=> '+JSON.stringify(encrypted.data));
+        const tx2 = await props.paymentProcessor.pay(item.price, JSON.stringify(encrypted.data));
         const receipt = await tx2.wait();
     
         await new Promise(resolve => setTimeout(resolve, 5000)); 
         const paymentResult = await axios.get(`${API_URL}/api/getPaymentResult/${payment.data}`)
         console.log(paymentResult);
-        alert(paymentResult.data.result);
+        alert(paymentResult);
     }
 
     

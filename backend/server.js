@@ -66,7 +66,7 @@ async function decryptWithPrivKey(encrypted){
     var res = '';
     try {
         res = await sigUtil.decrypt({
-            encryptedData: encryptedObj.data,
+            encryptedData: encryptedObj,
             privateKey: _privateKey,
           });
     } catch (error) {
