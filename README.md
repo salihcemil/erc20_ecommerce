@@ -29,7 +29,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Payment Ovewrview][payment-overview]
+![Payment Overview][payment-overview]
 
 This is a basic online payment system based on ERC20 tokens.
 
