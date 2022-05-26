@@ -64,7 +64,7 @@ On the blockchain side, we have 3 contracts. One is Sample ERC20 Token itself, t
 
 <!-- GETTING STARTED -->
 ## Getting Started
-![System Ovewrview][system-overview]
+![System Overview][system-overview]
 
 The project runs as follows step-by-step:
 
