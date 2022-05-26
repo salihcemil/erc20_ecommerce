@@ -123,6 +123,6 @@ Project Link: [https://github.com/salihcemil/erc20_ecommerce](https://github.com
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: images/main.jpeg
-[payment-overview]: images/main.jpg
+[product-screenshot]: images/main.png
+[payment-overview]: images/main.png
 [system-overview]: images/HL-Overview.png
